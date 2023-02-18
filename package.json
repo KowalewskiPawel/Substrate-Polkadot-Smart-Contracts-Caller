@@ -19,5 +19,9 @@
     "eslint-plugin-n": "^15.0.0",
     "eslint-plugin-promise": "^6.0.0",
     "typescript": "*"
+  },
+  "dependencies": {
+    "@polkadot/api": "^9.14.1",
+    "@polkadot/api-contract": "^9.14.1"
   }
 }
