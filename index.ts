@@ -1,7 +1,9 @@
 import { ApiPromise, WsProvider, Keyring } from "@polkadot/api";
 import { ContractPromise } from "@polkadot/api-contract";
 import { stringToU8a, u8aToHex, BN, BN_ONE } from "@polkadot/util";
+import { signatureVerify } from '@polkadot/util-crypto';
 import type { WeightV2 } from "@polkadot/types/interfaces";
+
 import dotenv from "dotenv";
 
 const MAX_CALL_WEIGHT = new BN(5_000_000_000_000).isub(BN_ONE);
@@ -10,7 +12,7 @@ const PROOFSIZE = new BN(1_000_000);
 dotenv.config();
 
 const wsProvider = new WsProvider("wss://ws.test.azero.dev");
-const contractAddress = ""; // Enter your Smart Contract address here
+const contractAddress = process.env.CONTRACT_ADDRESS // Enter your Smart Contract address here
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const contractMetadata = require("./metadata.json"); // import the given Smart Contract's metadata.json file
 
@@ -22,21 +24,27 @@ let api: ApiPromise | undefined;
 let contract: ContractPromise | undefined;
 
 const connectToProvider = async () => {
+    try {
   api = new ApiPromise({ provider: wsProvider });
   await api.isReady;
 
   console.log(api.genesisHash.toHex());
 
   contract = new ContractPromise(api, contractMetadata, contractAddress);
+    } catch (err) {
+        console.error(err);
+    }
 };
 
 connectToProvider();
 
 const alice = keyring.addFromUri(phrase);
 
-const message = stringToU8a("this is our message");
+console.log(alice.address);
+
+const message = stringToU8a("yes");
 const signature = alice.sign(message);
-const isValid = alice.verify(message, signature, alice.publicKey);
+const { isValid } = signatureVerify(message, signature, alice.address);
 
 console.log(
   `The signature ${u8aToHex(signature)}, is ${isValid ? "" : "in"}valid`
@@ -103,4 +111,4 @@ const callContract = async () => {
 
 setTimeout(() => {
   callContract();
-}, 2000);
+}, 3000);
