@@ -1,9 +1,13 @@
 import { Request, Response } from "express";
+import { signVerify } from "../utils/signVerify";
 
-export const verifySignature = (req: Request, res: Response) => {
+export const verifySignature = async (req: Request, res: Response) => {
     try {
-      const { signature } = req.body;
-      return res.status(200).json({ isSignatureValid: false });
+      const { message, signature, publicAddress } = req.body;
+
+      const isSignValid = await signVerify(message, signature, publicAddress);
+
+      return res.status(200).json({ isSignatureValid: isSignValid });
     } catch (error) {
       return res.status(500).json({
         error: true,
