@@ -23,6 +23,7 @@
   "dependencies": {
     "@polkadot/api": "^9.14.1",
     "@polkadot/api-contract": "^9.14.1",
-    "dotenv": "^16.0.3"
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2"
   }
 }
