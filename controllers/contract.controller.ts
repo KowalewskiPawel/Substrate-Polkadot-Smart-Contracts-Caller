@@ -3,9 +3,9 @@ import { readContractCall, writeContractCall } from "../contractAPI/contractCall
 
 export const readContract = async (req: Request, res: Response) => {
     try {
-      const { methodName } = req.body;
+      const { methodName, args } = req.body;
 
-      const readResult = await readContractCall(methodName);
+      const readResult = await readContractCall(methodName, args);
 
       return res.status(200).json({ result: readResult });
     } catch (error) {
@@ -18,9 +18,9 @@ export const readContract = async (req: Request, res: Response) => {
 
   export const writeContract = async (req: Request, res: Response) => {
     try {
-      const { methodName } = req.body;
+      const { methodName, args } = req.body;
 
-      await writeContractCall(methodName);
+      await writeContractCall(methodName, args);
 
       return res.status(200).json({ result: "OK" });
     } catch (error) {
