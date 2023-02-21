@@ -1,5 +1,6 @@
 <div align="center">
   <h1>Substrate Smart Contracts Caller</h1>
+   <strong>Ver. 0.2</strong>
 </div>
 
 ## About
@@ -55,7 +56,8 @@ PORT=<Port_for_the_app_instance>
 
 ```
 {
-    "methodName": "name_of_the_method"
+    "methodName": "name_of_the_method",
+    "args": [] // array with the arguments list
 }
 ```
 
@@ -65,7 +67,8 @@ PORT=<Port_for_the_app_instance>
 
 ```
 {
-    "methodName": "name_of_the_method"
+    "methodName": "name_of_the_method",
+    "args": [] // array with the arguments list
 }
 ```
 

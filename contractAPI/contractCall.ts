@@ -5,7 +5,7 @@ import { initializeProviderApi } from "../wsProviderAPI";
 import { ContractPromise } from "@polkadot/api-contract";
 import type { WeightV2 } from "@polkadot/types/interfaces";
 
-export const writeContractCall = async (methodName: string) => {
+export const writeContractCall = async (methodName: string, args: any[]) => {
   const providerApi = await initializeProviderApi();
 
   if (!providerApi) return;
@@ -26,7 +26,7 @@ export const writeContractCall = async (methodName: string) => {
       proofSize: PROOFSIZE,
     }) as WeightV2,
     storageDepositLimit,
-  });
+  }, ...args);
 
   // Create gasLimit value
 
@@ -40,7 +40,7 @@ export const writeContractCall = async (methodName: string) => {
   await contractApi.tx[methodName]({
       gasLimit,
       storageDepositLimit,
-    })
+    }, ...args)
     .signAndSend(accountKeypair, async (res) => {
       if (res.status.isInBlock) {
         console.log("in a block");
@@ -50,7 +50,7 @@ export const writeContractCall = async (methodName: string) => {
     });
 };
 
-export const readContractCall = async (methodName: string) => {
+export const readContractCall = async (methodName: string, args: any[]) => {
   // Read only query example
 
   const providerApi = await initializeProviderApi();
@@ -73,7 +73,7 @@ export const readContractCall = async (methodName: string) => {
         proofSize: PROOFSIZE,
       }) as WeightV2,
       storageDepositLimit,
-    }
+    }, ...args
   );
 
   // The actual result from RPC as `ContractExecResult`
