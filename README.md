@@ -1,6 +1,6 @@
 <div align="center">
   <h1>Substrate Smart Contracts Caller</h1>
-   <strong>Ver. 0.2</strong>
+   <strong>Ver. 0.3</strong>
 </div>
 
 ## About
@@ -61,6 +61,24 @@ PORT=<Port_for_the_app_instance>
 }
 ```
 
+-  GET `api/contract/txUrl` - Previously executed transaction's block url
+
+**REQUEST BODY**
+
+```
+{
+    "txId": "previously_executed_transaction_id",
+}
+```
+
+**RESPONSE BODY**
+
+```
+{
+    "transactionBlockUrl": "https://test.azero.dev/?rpc=wss%3A%2F%2Fws.test.azero.dev#/explorer/query/<block_hash>"
+}
+```
+
 -  POST `api/contract/write` - Execution of the write method on the given smart contract
 
 **REQUEST BODY**
@@ -69,6 +87,18 @@ PORT=<Port_for_the_app_instance>
 {
     "methodName": "name_of_the_method",
     "args": [] // array with the arguments list
+}
+```
+
+#### Accounts
+
+-  GET `api/account/publicKey` - Account's Public Key
+
+**RESPONSE BODY**
+
+```
+{
+    "accountPublicKey": "public_key"
 }
 ```
 
@@ -83,6 +113,14 @@ PORT=<Port_for_the_app_instance>
     "message": "singedMessage",
     "signature": "signatureHex",
     "publicAddress": "publicKey"
+}
+```
+
+**RESPONSE BODY**
+
+```
+{
+    "isSignatureValid": boolean
 }
 ```
 
