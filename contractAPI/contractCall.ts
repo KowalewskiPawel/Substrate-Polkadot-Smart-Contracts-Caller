@@ -4,8 +4,13 @@ import { MAX_CALL_WEIGHT, PROOFSIZE } from "../consts";
 import { initializeProviderApi } from "../wsProviderAPI";
 import { ContractPromise } from "@polkadot/api-contract";
 import type { WeightV2 } from "@polkadot/types/interfaces";
+import { writeTransactionUrl } from "../utils/fs";
 
-export const writeContractCall = async (methodName: string, args: any[]) => {
+export const writeContractCall = async (
+  methodName: string,
+  args: any[],
+  transactionId?: string
+) => {
   const providerApi = await initializeProviderApi();
 
   if (!providerApi) return;
@@ -20,13 +25,17 @@ export const writeContractCall = async (methodName: string, args: any[]) => {
 
   // Execute dry-run query call to fetch required gas value
 
-  const { gasRequired } = await contractApi.query[methodName](accountKeypair.address, {
-    gasLimit: providerApi?.registry.createType("WeightV2", {
-      refTime: MAX_CALL_WEIGHT,
-      proofSize: PROOFSIZE,
-    }) as WeightV2,
-    storageDepositLimit,
-  }, ...args);
+  const { gasRequired } = await contractApi.query[methodName](
+    accountKeypair.address,
+    {
+      gasLimit: providerApi?.registry.createType("WeightV2", {
+        refTime: MAX_CALL_WEIGHT,
+        proofSize: PROOFSIZE,
+      }) as WeightV2,
+      storageDepositLimit,
+    },
+    ...args
+  );
 
   // Create gasLimit value
 
@@ -37,17 +46,24 @@ export const writeContractCall = async (methodName: string, args: any[]) => {
 
   // actual smart contract transaction call
 
-  await contractApi.tx[methodName]({
+  await contractApi.tx[methodName](
+    {
       gasLimit,
       storageDepositLimit,
-    }, ...args)
-    .signAndSend(accountKeypair, async (res) => {
-      if (res.status.isInBlock) {
-        console.log("in a block");
-      } else if (res.status.isFinalized) {
-        console.log("finalized");
+    },
+    ...args
+  ).signAndSend(accountKeypair, async (res) => {
+    if (res.status.isInBlock) {
+      console.log("in a block");
+      const { number } = await contractApi.api.rpc.chain.getHeader();
+      const blockInfo = `https://test.azero.dev/?rpc=wss%3A%2F%2Fws.test.azero.dev#/explorer/query/${number}`;
+      if (transactionId) {
+        writeTransactionUrl(transactionId, blockInfo);
       }
-    });
+    } else if (res.status.isFinalized) {
+      console.log("finalized");
+    }
+  });
 };
 
 export const readContractCall = async (methodName: string, args: any[]) => {
@@ -73,7 +89,8 @@ export const readContractCall = async (methodName: string, args: any[]) => {
         proofSize: PROOFSIZE,
       }) as WeightV2,
       storageDepositLimit,
-    }, ...args
+    },
+    ...args
   );
 
   // The actual result from RPC as `ContractExecResult`
@@ -83,7 +100,7 @@ export const readContractCall = async (methodName: string, args: any[]) => {
   if (result.isOk) {
     // output the return value
     console.log("Success", output?.toHuman());
-    
+
     return output?.toHuman();
   } else {
     console.error("Error", result.asErr);

@@ -1,7 +1,9 @@
 import { Router } from "express";
-import { readContract, writeContract } from "../controllers";
+import { readContract, txUrl, writeContract } from "../controllers";
 
 export const contractRouter = Router();
 
-contractRouter.get("/read", readContract);
-contractRouter.post("/write", writeContract);
+contractRouter
+.get("/read", readContract)
+.get("/txUrl", txUrl)
+.post("/write", writeContract);
