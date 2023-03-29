@@ -13,7 +13,7 @@ export const writeContractCall = async (
 ) => {
   const providerApi = await initializeProviderApi();
 
-  if (!providerApi) return "No Provider API";
+  if (!providerApi) return;
 
   const contractApi = new ContractPromise(
     providerApi,
