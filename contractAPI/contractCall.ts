@@ -8,6 +8,7 @@ import { writeTransactionUrl } from "../utils/fs";
 
 export const writeContractCall = async (
   methodName: string,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   args: any[],
   transactionId?: string
 ) => {
@@ -25,7 +26,7 @@ export const writeContractCall = async (
 
   // Execute dry-run query call to fetch required gas value
 
-  const { gasRequired } = await contractApi.query[methodName](
+  const { gasRequired, result, output } = await contractApi.query[methodName](
     accountKeypair.address,
     {
       gasLimit: providerApi?.registry.createType("WeightV2", {
@@ -45,14 +46,33 @@ export const writeContractCall = async (
   ) as WeightV2;
 
   // actual smart contract transaction call
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  /* @ts-ignore */
+  const isReverted = result.asOk.toJSON().flags?.includes("Revert");
 
-  await contractApi.tx[methodName](
+  // check if the call was successful
+  if (result.isOk && isReverted) {
+    // output the return value
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    /* @ts-ignore */
+    return output?.toJSON()?.ok?.err;
+
+    // return output?.toHuman();
+  } else if (result.isErr) {
+    console.error("Error", result.asErr);
+
+    return result.asErr.toString();
+  }
+
+  const queryTx = await contractApi.tx[methodName](
     {
       gasLimit,
       storageDepositLimit,
     },
     ...args
-  ).signAndSend(accountKeypair, async (res) => {
+  );
+
+  await queryTx.signAndSend(accountKeypair, async (res) => {
     if (res.status.isInBlock) {
       console.log("in a block");
       const { number } = await contractApi.api.rpc.chain.getHeader();
@@ -64,8 +84,11 @@ export const writeContractCall = async (
       console.log("finalized");
     }
   });
+
+  return "OK";
 };
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const readContractCall = async (methodName: string, args: any[]) => {
   // Read only query example
 
