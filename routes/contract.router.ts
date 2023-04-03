@@ -5,5 +5,5 @@ export const contractRouter = Router();
 
 contractRouter
 .get("/read", readContract)
-.get("/txUrl", txUrl)
+.post("/txUrl", txUrl)
 .post("/write", writeContract);
