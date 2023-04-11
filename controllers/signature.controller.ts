@@ -3,7 +3,7 @@ import { signVerify } from "../utils/signVerify";
 
 export const verifySignature = async (req: Request, res: Response) => {
     try {
-      const { message, signature, publicAddress } = req.body;
+      const { message, signature, publicAddress } = req.query as { [key: string]: string };
 
       const isSignValid = await signVerify(message, signature, publicAddress);
 

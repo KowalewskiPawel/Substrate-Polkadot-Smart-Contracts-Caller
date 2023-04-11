@@ -1,9 +1,10 @@
 import { Router } from "express";
-import { readContract, txUrl, writeContract } from "../controllers";
+import { checkCodeHash, readContract, txUrl, writeContract } from "../controllers";
 
 export const contractRouter = Router();
 
 contractRouter
 .get("/read", readContract)
-.post("/txUrl", txUrl)
+.get("/codeHash", checkCodeHash)
+.get("/txUrl", txUrl)
 .post("/write", writeContract);
