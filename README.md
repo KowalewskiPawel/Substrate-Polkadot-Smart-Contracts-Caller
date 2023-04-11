@@ -52,23 +52,18 @@ PORT=<Port_for_the_app_instance>
 
 -  GET `api/contract/read` - Execution of the read method on the given smart contract
 
-**REQUEST BODY**
+**EXAMPLE QUERY**
 
 ```
-{
-    "methodName": "name_of_the_method",
-    "args": [] // array with the arguments list
-}
+http://localhost:3000/api/contract/read/?methodName=getUserActivityScore&args[]=pawel
 ```
 
 -  GET `api/contract/txUrl` - Previously executed transaction's block url
 
-**REQUEST BODY**
+**EXAMPLE QUERY**
 
 ```
-{
-    "txId": "previously_executed_transaction_id",
-}
+http://localhost:3000/api/contract/txUrl/?tx=421d940c-fe60-4706-957d-dcc62fa856be
 ```
 
 **RESPONSE BODY**
@@ -90,6 +85,22 @@ PORT=<Port_for_the_app_instance>
 }
 ```
 
+-  GET `api/contract/codeHash` - Previously executed transaction's block url
+
+**EXAMPLE QUERY**
+
+```
+http://localhost:3000/api/contract/codeHash/?contract=5Egajaq39MT1Q3Y17bh5fbrQXUBgckZahq87JmfW9dJ7KYpV
+```
+
+**RESPONSE BODY**
+
+```
+{
+    "codeHash": "<code_hash>"
+}
+```
+
 #### Accounts
 
 -  GET `api/account/publicKey` - Account's Public Key
@@ -106,14 +117,10 @@ PORT=<Port_for_the_app_instance>
 
 -  GET `api/signature/verify` - Verification of the given signature
 
-**REQUEST BODY**
+**EXAMPLE QUERY**
 
 ```
-{
-    "message": "singedMessage",
-    "signature": "signatureHex",
-    "publicAddress": "publicKey"
-}
+http://localhost:3000/api/signature/verify/?message=secretmessage&signature=356765865443643643634&publicAddress=46565475474374734
 ```
 
 **RESPONSE BODY**
