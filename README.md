@@ -1,6 +1,6 @@
 <div align="center">
   <h1>Substrate Smart Contracts Caller</h1>
-   <strong>Ver. 0.3</strong>
+   <strong>Ver. 0.4.9</strong>
 </div>
 
 ## About
