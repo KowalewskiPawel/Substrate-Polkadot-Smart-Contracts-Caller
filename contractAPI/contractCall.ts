@@ -129,3 +129,13 @@ export const readContractCall = async (methodName: string, args: any[]) => {
     console.error("Error", result.asErr);
   }
 };
+
+export const fetchCodeHash = async (contractAddress: string) => {
+  const providerApi = await initializeProviderApi();
+
+  if (!providerApi) return;
+
+  const { codeHash } = await (await providerApi.query.contracts.contractInfoOf(contractAddress)).toHuman() as { codeHash: string };
+
+  return codeHash;
+};

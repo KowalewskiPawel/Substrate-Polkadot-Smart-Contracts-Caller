@@ -10,8 +10,6 @@ export const initializeProviderApi = async () => {
     const providerApi = new ApiPromise({ provider: wsProvider });
     await providerApi.isReady;
 
-    console.log(providerApi.genesisHash.toHex());
-
     return providerApi;
   } catch (err) {
     console.error(err);
