@@ -1,15 +1,15 @@
 import { contractAddress, contractMetadata } from "./contractData";
-import { accountKeypair } from "../account";
 import { MAX_CALL_WEIGHT, PROOFSIZE } from "../consts";
 import { initializeProviderApi } from "../wsProviderAPI";
 import { ContractPromise } from "@polkadot/api-contract";
 import type { WeightV2 } from "@polkadot/types/interfaces";
 import { writeTransactionUrl } from "../utils/fs";
+import { accountKeypair } from "../account";
 
 export const writeContractCall = async (
   methodName: string,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  args: any[],
+  args = [],
   transactionId?: string
 ) => {
   const providerApi = await initializeProviderApi();
@@ -89,7 +89,7 @@ export const writeContractCall = async (
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const readContractCall = async (methodName: string, args: any[]) => {
+export const readContractCall = async (methodName: string, args = []) => {
   // Read only query example
 
   const providerApi = await initializeProviderApi();
@@ -107,7 +107,7 @@ export const readContractCall = async (methodName: string, args: any[]) => {
   const { result, output } = await contractApi.query[methodName](
     accountKeypair.address,
     {
-      gasLimit: providerApi?.registry.createType("WeightV2", {
+      gasLimit: providerApi?.registry.createType('WeightV2', {
         refTime: MAX_CALL_WEIGHT,
         proofSize: PROOFSIZE,
       }) as WeightV2,
@@ -115,15 +115,14 @@ export const readContractCall = async (methodName: string, args: any[]) => {
     },
     ...args
   );
-
+     
   // The actual result from RPC as `ContractExecResult`
   console.log(result.toHuman());
-
+      
   // check if the call was successful
   if (result.isOk) {
     // output the return value
     console.log("Success", output?.toHuman());
-
     return output?.toHuman();
   } else {
     console.error("Error", result.asErr);
